@@ -1,0 +1,26 @@
+# Build artifacts
+*.vvp
+*.fsdb
+*.log
+simv
+simv.daidir/
+xcelium.d/
+verilator/
+obj_dir/
+work/
+*.vcd
+*.wlf
+
+# Simulator run outputs
+sim/run/
+
+# Python
+__pycache__/
+*.pyc
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store

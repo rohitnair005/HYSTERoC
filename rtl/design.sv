@@ -1,4 +1,10 @@
-`include "hysteroc_defs.vh"
+// =============================================================================
+// design.sv : HYSTERoC RTL file list (include-dir based).
+// Compile with:  -I rtl/common -I rtl/router -I rtl/control -I rtl/top -I rtl/bench
+// bench/ modules are simulation-only stimulus/check blocks and are NOT meant
+// for synthesis; see sim/hysteroc.f for the full list.
+// =============================================================================
+`include "hysteroc.vh"
 `include "input_fifo.v"
 `include "ewma_filter.v"
 `include "congestion_estimator.v"

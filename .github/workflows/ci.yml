@@ -1,0 +1,47 @@
+name: HYSTERoC CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: iverilog elaboration
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install iverilog
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+      - name: Elaborate the full design (rtl + bench)
+        run: |
+          make lint
+          make sim-rtl
+
+  verilator:
+    name: Verilator --lint-only
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Verilator
+        run: sudo apt-get update && sudo apt-get install -y verilator
+      - name: Lint noc_top (synthesisable subset)
+        run: |
+          verilator --lint-only --top-module noc_top \
+            -Irtl/common -Irtl/router -Irtl/control -Irtl/top -Irtl/bench \
+            rtl/router/input_fifo.v rtl/control/ewma_filter.v rtl/control/congestion_estimator.v \
+            rtl/control/hysteresis_controller.v rtl/router/round_robin_arbiter.v \
+            rtl/router/route_compute.v rtl/router/route_select.v rtl/router/packet_tracker.v \
+            rtl/router/switch_allocator.v rtl/router/crossbar.v rtl/router/noc_router.v \
+            rtl/control/drain_detector.v rtl/control/transition_controller.v \
+            rtl/control/mode_switch_direct.v rtl/top/noc_top.v
+        continue-on-error: true   # lint warnings are tracked, not blocking
+
+  docs:
+    name: Documentation links
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check README/docs links
+        run: make docs
